@@ -26,7 +26,7 @@
 #define STEPS_POST_URL BASE_URL "/api/activity/weekly-steps"
 #define DEVICE_STATUS_URL BASE_URL "/device/device/status"
 #define FALL_ALERT_URL  BASE_URL "/test/fall-detection"
-#define USER_ID 4  // patient_id / user_id من الداتابيز
+#define USER_ID 4  // patient_id / user_id 
 int batteryPercent = 90; // مؤقت
 unsigned long lastDevicePing = 0;
 #define DEVICE_PING_INTERVAL 60000
@@ -36,14 +36,14 @@ String emergencyNumbers[MAX_CONTACTS];
 int emergencyCount = 0;
 // for refresh num/////////
 unsigned long lastContactsFetch = 0;
-#define CONTACTS_REFRESH_INTERVAL (6UL * 60UL * 60UL * 1000UL)  // 6 ساعات
+#define CONTACTS_REFRESH_INTERVAL (6UL * 60UL * 60UL * 1000UL)  //
 
 // ===== BACKEND SEND TIMER =====
 unsigned long lastVitalsSend = 0;
 #define VITALS_SEND_INTERVAL 10000   //ms
 /////////time egypt////////////
 const char* ntpServer = "pool.ntp.org";
-const long  gmtOffset_sec = 2 * 3600;     // مصر UTC+2
+const long  gmtOffset_sec = 2 * 3600;     //  UTC+2
 const int   daylightOffset_sec = 0;
 
 /* ================= PINS ================= */
@@ -119,8 +119,8 @@ bool gsrFilled = false;
 unsigned long lastStepTime = 0;
 int stepCount = 0;
 unsigned long lastStepsSend = 0;
-#define STEPS_SEND_INTERVAL 60000   // كل دقيقة
-#define STEP_THRESHOLD 0.9     // اضبطها بعد التجربة (1.2 ~ 1.5)
+#define STEPS_SEND_INTERVAL 60000   // 
+#define STEP_THRESHOLD 0.9     //    (1.2 ~ 1.5)
 #define STEP_DELAY     500     // ms (debounce)
 #define MAG_WINDOW 5
 float magBuffer[MAG_WINDOW];
@@ -164,7 +164,7 @@ int getFilteredGSR(int newValue) {
 }
 void updateGSRBaseline(int filteredGSR) {
   static unsigned long lastUpdate = 0;
-  if (millis() - lastUpdate < 5000) return; // كل 5 ثواني
+  if (millis() - lastUpdate < 5000) return; //   
 
   gsrBaseline = (gsrBaseline * 9 + filteredGSR) / 10;
   lastUpdate = millis();
@@ -268,14 +268,14 @@ void initSIM800() {
 bool sendSMS(const String& msg, const char* number) {
 
 
-  // تنظيف البفر
+  // 
   while (Serial2.available()) Serial2.read();
 
   Serial2.print("AT+CMGS=\"");
   Serial2.print(number);
   Serial2.println("\"");
 
-  // انتظار علامة >
+  //  
   unsigned long t = millis();
   bool prompt = false;
   while (millis() - t < 5000) {
@@ -293,11 +293,11 @@ bool sendSMS(const String& msg, const char* number) {
     return false;
   }
 
-  // إرسال الرسالة
+  //  
   Serial2.print(msg);
   Serial2.write(26);   // CTRL+Z
 
-  // انتظار التأكيد
+  //  
   t = millis();
   while (millis() - t < 15000) {
     if (Serial2.available()) {
@@ -403,13 +403,13 @@ bool fetchEmergencyNumbers() {
   return emergencyCount > 0;
 }
 
-//      steepssssssssssss//
+//      steeps//
 float lastMag = 0;
 
 void detectStep(float mag) {
   unsigned long now = millis();
 
-  // لازم يطلع فوق threshold وبعدين ينزل (peak)
+  //  
   if (mag > STEP_THRESHOLD &&
       lastMag <= STEP_THRESHOLD &&
       (now - lastStepTime) > STEP_DELAY) {
@@ -445,7 +445,7 @@ void prepareSIM800ForSMS() {
   Serial2.println("AT");
   delay(500);
 
-  Serial2.println("AT+CFUN=1");   // تأكيد تشغيل الموديول
+  Serial2.println("AT+CFUN=1");   // 
   delay(1500);
 
   Serial2.println("AT+CSCS=\"GSM\""); // Character set
@@ -511,7 +511,7 @@ void sendVitalsToBackend(int hr, int spo2, float temp, String stress) {
 http.begin(VITALS_POST_URL);
 http.addHeader("Content-Type", "application/json");
 http.addHeader("Accept", "application/json");
-http.addHeader("X-API-KEY", API_KEY);   // ⭐⭐⭐ السطر المهم
+http.addHeader("X-API-KEY", API_KEY);   // ⭐⭐⭐ 
   StaticJsonDocument<256> doc;
   doc["user_id"] = USER_ID;
   doc["hr"] = hr;
@@ -565,7 +565,7 @@ void sendLocationToBackend() {
 http.begin(LOCATION_POST_URL);
 http.addHeader("Content-Type", "application/json");
 http.addHeader("Accept", "application/json");
-http.addHeader("X-API-KEY", API_KEY);   // ⭐⭐⭐ السطر المهم
+http.addHeader("X-API-KEY", API_KEY);   // ⭐⭐⭐ 
   StaticJsonDocument<128> doc;
   doc["patient_id"] = USER_ID;
   doc["latitude"] = latitude;
@@ -706,7 +706,7 @@ bool isValidVitals(int hr, int spo2) {
 /* ================= LOOP ================= */
 void loop() {
   
-  updateGPS();   // <<<<<< مهم جدًا
+  updateGPS();   // 
 
   static int hr, spo2, gsr;
   static float temp;
@@ -830,4 +830,5 @@ if (millis() - lastContactsFetch > CONTACTS_REFRESH_INTERVAL) {
 
   drawMainPage(hr, spo2, temp, stress);
   delay(200);
+
 }
